@@ -1,0 +1,37 @@
+**HOMEPAGE**
+
+<div className="min-h-screen bg-gradient-to-br from-green-700 to-green-200 flex items-center justify-center p-4 text-gray-800">
+    min-h-screen : sets the minimum height of the element to '100% of the viewport-height (100vh)'
+    bg-gradient-to-br : applies a background gradient from 'top-left' to 'bottom-right'
+    from-green-700 : sets the 'starting color' of the gradient
+    to-green-700 : sets the 'ending color' of the gradient
+    flex : turns the element into a flex container (enables flexbox layout for positioning child elements)
+    items-center : aligns children 'vertically' to the center of the flex container
+    justify-center : aligns children 'horizontally' to the center of the flex container
+    p-4 : adds padding of 1rem(16px) on all sides
+    text-gray-800 : sets the text color
+
+<div className="w-full max-w-6xl bg-white p-6 md:p-8 rounded-3xl shadow-2xl">
+    w-full : sets the element's width to 100% of its parent-container
+    max-w-6xl : restricts the maximum-width of the element to 72rem (1152px)
+    bg-white : sets the background color
+    rounded-3xl : applies extra-large border-radius
+    shadow-2xl : adds a very large box-shadow (giving a strong depth/elevation effect)
+
+<h1 className="text-center text-2xl sm:text-3xl font-semibold text-gray-900 mb-8">
+    text-center: horizontally centers the text
+    text-2xl : sets the font size of the text
+    font-semibold : applies a semi-bold font weight
+    mb-8 : adds a margin-bottom of 2rem (32px)
+
+<h1 className="text-4xl sm:text-5xl my-4">
+    my-4 : applies a vertical margin
+
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-6">
+    grid : turns the element into a Grid container
+    grid-cols-1 : defines the grid to have 1-column
+    gap-4 : sets the gap between grid-items
+
+<div className="bg-white p-5 sm:p-6 rounded-xl shadow hover:-translate-y-1 transition">
+    hover:-translate-y-1 : On hover, applies a 'negative vertical translation' pf 0.25rem(4px) - moving the element upward
+    transition : applies a default transition to all animatable properties
