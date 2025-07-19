@@ -35,3 +35,37 @@
 <div className="bg-white p-5 sm:p-6 rounded-xl shadow hover:-translate-y-1 transition">
     hover:-translate-y-1 : On hover, applies a 'negative vertical translation' pf 0.25rem(4px) - moving the element upward
     transition : applies a default transition to all animatable properties
+
+<ul className="overflow-y-auto max-h-[400px] sm:max-h-[500px] pr-2 space-y-3">
+    overflow-y-auto : enables vertical scrolling only when content overflows and hides scrollbars otherwise
+    max-h-[400px] : sets the maximum-height to 400px
+    pr-2 : adds padding-right
+    space-y-3 : adds vertical spacing of 0.75rem (12px) between direct child elements
+
+<li
+    key={t.id}
+    className={`flex justify-between items-center p-4 rounded-xl shadow border-r-4 transition-all animate-slideIn ${
+    t.amount > 0 ? "border-gray-600" : "border-red-600"
+    }`}
+>
+    justify-between : Distributes child elements in a flex container so that:
+                       -> First item is aligned to the start
+                       -> Last item is aligned to the end
+                       -> And space is evenly placed between all items
+    transition-all : applies a 'smooth transition' to all animatable properties
+    animate-slideIn : applies a custom animation named 'slideIn'
+
+ <label className="block mb-2 text-gray-700 font-medium">
+    block : makes the element a block-level element, causing it to take up to full-width ny default
+
+ <input
+    type="number"
+    value={amount}
+    onChange={(e) => setAmount(e.target.value)}
+    required
+    className="w-full p-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring focus:ring-blue-200"
+    placeholder="Enter amount..."
+/>
+    focus:outline-none : removes the default focus outline when the element is focused
+    focus:ring : adds a default ring outline when the element is focused
+    focus:ring-blue-200 : sets the ring-color on focus
