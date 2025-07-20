@@ -1,0 +1,163 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { LogOut } from 'lucide-react';
+
+const HomePage = () => {
+  const [description, setDescription] = useState('');
+  const [amount, setAmount] = useState('');
+  const [transactions, setTransactions] = useState([]);
+  const [balance, setBalance] = useState(0);
+  const [income, setIncome] = useState(0);
+  const [expenses, setExpenses] = useState(0);
+  const [fullName, setFullName] = useState('');
+
+  const navigate = useNavigate();
+
+  const fetchHomeData = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth`, { withCredentials: true });
+      const { fullName, balance, income, expenses, transactions } = res.data;
+
+      setFullName(fullName);
+      setBalance(balance);
+      setIncome(income);
+      setExpenses(expenses);
+      setTransactions(transactions);
+    } catch (err) {
+      console.error('Error fetching home data:', err);
+      navigate('/login');
+    }
+  };
+
+  useEffect(() => {
+    fetchHomeData();
+  }, []);
+
+  const handleAddTransaction = async (e) => {
+    e.preventDefault();
+    if (!description || !amount) return toast.error("Please fill in all fields");
+
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/transactions/add`, {
+        text: description,
+        amount: parseFloat(amount),
+      }, { withCredentials: true });
+
+      if (res.status === 201) {
+        toast.success("Transaction added!");
+        setDescription('');
+        setAmount('');
+        fetchHomeData(); // Refresh the UI
+      }
+    } catch (err) {
+      console.error("Add transaction failed", err);
+      toast.error("Something went wrong");
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/signout`, {}, { withCredentials: true });
+      navigate('/login');
+    } catch (err) {
+      console.error("Logout error:", err);
+      toast.error("Logout failed");
+    }
+  };
+
+  return (
+    <div className='min-h-screen bg-green-700 text-black'>
+      {/* Navbar */}
+      <nav className='bg-white p-4 flex justify-between items-center shadow-md'>
+        <h1 className='text-3xl font-bold text-green-700'>Spendly</h1>
+        <button
+          onClick={handleLogout}
+          className='flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition'
+        >
+          <LogOut size={18} />
+          Logout
+        </button>
+      </nav>
+
+      {/* Content */}
+      <div className='max-w-4xl mx-auto bg-white p-6 mt-6 rounded-lg shadow-lg'>
+        <h2 className='text-2xl font-semibold text-center mb-6'>Expense Tracker</h2>
+
+        {/* Balance */}
+        <div className='bg-green-200 p-6 rounded-lg text-center'>
+          <p className='text-sm'>Your Balance</p>
+          <h2 className='text-3xl font-bold'>${balance.toFixed(2)}</h2>
+        </div>
+
+        {/* Income & Expenses */}
+        <div className='grid grid-cols-2 gap-4 mt-4'>
+          <div className='bg-green-50 p-4 text-center rounded'>
+            <p className='text-green-600 font-semibold'>Income</p>
+            <h3 className='font-bold'>${income.toFixed(2)}</h3>
+          </div>
+          <div className='bg-red-50 p-4 text-center rounded'>
+            <p className='text-red-600 font-semibold'>Expenses</p>
+            <h3 className='font-bold text-red-600'>-${Math.abs(expenses).toFixed(2)}</h3>
+          </div>
+        </div>
+
+        {/* Transactions List & Add Transaction */}
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-6'>
+          {/* Transactions */}
+          <div>
+            <h3 className='font-semibold mb-2'>Transactions</h3>
+            <ul className='space-y-2 max-h-64 overflow-y-auto pr-2'>
+              {transactions.length > 0 ? transactions.map((tx, index) => (
+                <li
+                  key={index}
+                  className={`flex justify-between items-center p-2 border rounded-md ${tx.amount < 0 ? 'border-red-400' : 'border-green-400'}`}
+                >
+                  <span>{tx.text}</span>
+                  <span className={`${tx.amount < 0 ? 'text-red-500' : 'text-green-600'}`}>
+                    {tx.amount < 0 ? '-' : '+'}${Math.abs(tx.amount).toFixed(2)}
+                  </span>
+                </li>
+              )) : (
+                <p>No transactions yet.</p>
+              )}
+            </ul>
+          </div>
+
+          {/* Add Transaction */}
+          <div className='bg-gray-100 p-4 rounded-md'>
+            <h3 className='font-semibold mb-4'>Add Transactions</h3>
+            <form onSubmit={handleAddTransaction} className='space-y-4'>
+              <input
+                type='text'
+                placeholder='Description'
+                className='w-full p-2 border rounded-md'
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              />
+              <input
+                type='number'
+                placeholder='Amount'
+                className='w-full p-2 border rounded-md'
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                required
+              />
+              <p className='text-sm text-gray-600'>Use negative (-) for expenses</p>
+              <button
+                type='submit'
+                className='w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition'
+              >
+                Add Transaction
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default HomePage;
