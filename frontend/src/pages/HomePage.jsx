@@ -12,6 +12,9 @@ const HomePage = () => {
   const [income, setIncome] = useState(0);
   const [expenses, setExpenses] = useState(0);
   const [fullName, setFullName] = useState('');
+  const [editId, setEditId] = useState(null);
+  const [editDescription, setEditDescription] = useState('');
+  const [editAmount, setEditAmount] = useState('');
 
   const navigate = useNavigate();
 
@@ -19,7 +22,6 @@ const HomePage = () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth`, { withCredentials: true });
       const { fullName, balance, income, expenses, transactions } = res.data;
-
       setFullName(fullName);
       setBalance(balance);
       setIncome(income);
@@ -38,22 +40,59 @@ const HomePage = () => {
   const handleAddTransaction = async (e) => {
     e.preventDefault();
     if (!description || !amount) return toast.error("Please fill in all fields");
-
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/transactions/add`, {
-        text: description,
-        amount: parseFloat(amount),
+        description,
+        amount: parseFloat(amount)
       }, { withCredentials: true });
 
-      if (res.status === 201) {
+      if (res.status === 200) {
         toast.success("Transaction added!");
         setDescription('');
         setAmount('');
-        fetchHomeData(); // Refresh the UI
+        fetchHomeData();
       }
     } catch (err) {
       console.error("Add transaction failed", err);
       toast.error("Something went wrong");
+    }
+  };
+
+  const handleDeleteTransaction = async (id) => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/transactions/${id}`, { withCredentials: true });
+      toast.success("Transaction deleted!");
+      fetchHomeData();
+    } catch (err) {
+      console.error("Delete failed", err);
+      toast.error("Failed to delete");
+    }
+  };
+
+  const handleEditTransaction = (transaction) => {
+    setEditId(transaction._id);
+    setEditDescription(transaction.description);
+    setEditAmount(transaction.amount);
+  };
+
+  const handleUpdateTransaction = async (e) => {
+    e.preventDefault();
+    if (!editDescription || !editAmount) return toast.error("All fields required");
+
+    try {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/transactions/${editId}`, {
+        description: editDescription,
+        amount: parseFloat(editAmount)
+      }, { withCredentials: true });
+
+      toast.success("Transaction updated!");
+      setEditId(null);
+      setEditDescription('');
+      setEditAmount('');
+      fetchHomeData();
+    } catch (err) {
+      console.error("Update failed", err);
+      toast.error("Failed to update");
     }
   };
 
@@ -83,7 +122,7 @@ const HomePage = () => {
 
       {/* Content */}
       <div className='max-w-4xl mx-auto bg-white p-6 mt-6 rounded-lg shadow-lg'>
-        <h2 className='text-2xl font-semibold text-center mb-6'>Expense Tracker</h2>
+        <h2 className='text-2xl font-semibold text-center mb-6'>Welcome, {fullName}</h2>
 
         {/* Balance */}
         <div className='bg-green-200 p-6 rounded-lg text-center'>
@@ -109,15 +148,38 @@ const HomePage = () => {
           <div>
             <h3 className='font-semibold mb-2'>Transactions</h3>
             <ul className='space-y-2 max-h-64 overflow-y-auto pr-2'>
-              {transactions.length > 0 ? transactions.map((tx, index) => (
+              {transactions.length > 0 ? transactions.map((tx) => (
                 <li
-                  key={index}
-                  className={`flex justify-between items-center p-2 border rounded-md ${tx.amount < 0 ? 'border-red-400' : 'border-green-400'}`}
+                  key={tx._id}
+                  className={`flex flex-col border rounded-md p-2 ${tx.amount < 0 ? 'border-red-400' : 'border-green-400'}`}
                 >
-                  <span>{tx.text}</span>
-                  <span className={`${tx.amount < 0 ? 'text-red-500' : 'text-green-600'}`}>
-                    {tx.amount < 0 ? '-' : '+'}${Math.abs(tx.amount).toFixed(2)}
-                  </span>
+                  {editId === tx._id ? (
+                    <form onSubmit={handleUpdateTransaction} className='space-y-2'>
+                      <input
+                        className='w-full p-1 border rounded'
+                        value={editDescription}
+                        onChange={(e) => setEditDescription(e.target.value)}
+                      />
+                      <input
+                        className='w-full p-1 border rounded'
+                        type='number'
+                        value={editAmount}
+                        onChange={(e) => setEditAmount(e.target.value)}
+                      />
+                      <button type='submit' className='bg-blue-500 text-white px-2 py-1 rounded'>Save</button>
+                    </form>
+                  ) : (
+                    <div className='flex justify-between items-center'>
+                      <span>{tx.description}</span>
+                      <div className='flex gap-2 items-center'>
+                        <span className={`${tx.amount < 0 ? 'text-red-500' : 'text-green-600'}`}>
+                          {tx.amount < 0 ? '-' : '+'}${Math.abs(tx.amount).toFixed(2)}
+                        </span>
+                        <button onClick={() => handleEditTransaction(tx)} className='text-blue-600'>Edit</button>
+                        <button onClick={() => handleDeleteTransaction(tx._id)} className='text-red-600'>Delete</button>
+                      </div>
+                    </div>
+                  )}
                 </li>
               )) : (
                 <p>No transactions yet.</p>
