@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 
 const LoginPage = () => {
@@ -67,6 +67,13 @@ const LoginPage = () => {
             >
                 Login
             </button>
+
+            <p className="text-sm text-gray-600 mt-4 text-center">
+                Don't have an account?{" "}
+                <Link to="/signup" className="text-blue-600 hover:underline">
+                    Sign Up
+                </Link>
+            </p>
 
         </form>
     </div>

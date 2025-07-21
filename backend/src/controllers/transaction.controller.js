@@ -67,7 +67,7 @@ export const deleteTransaction = async(req, res) => {
             user.expenses -= Math.abs(amount)
 
         // Remove transaction
-        transaction.remove()
+        user.transactions.pull({_id: transactionId})
         await user.save()
 
         res.status(200).json({

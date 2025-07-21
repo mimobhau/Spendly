@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { LogOut, Pencil, Trash2 } from 'lucide-react';
 
 const HomePage = () => {
   const [description, setDescription] = useState('');
@@ -122,23 +122,23 @@ const HomePage = () => {
 
       {/* Content */}
       <div className='max-w-4xl mx-auto bg-white p-6 mt-6 rounded-lg shadow-lg'>
-        <h2 className='text-2xl font-semibold text-center mb-6'>Welcome, {fullName}</h2>
+        <h2 className='text-2xl font-semibold mb-6'>Welcome, {fullName}</h2>
 
         {/* Balance */}
         <div className='bg-green-200 p-6 rounded-lg text-center'>
           <p className='text-sm'>Your Balance</p>
-          <h2 className='text-3xl font-bold'>${balance.toFixed(2)}</h2>
+          <h2 className='text-3xl font-bold'>₹{balance.toFixed(2)}</h2>
         </div>
 
         {/* Income & Expenses */}
         <div className='grid grid-cols-2 gap-4 mt-4'>
           <div className='bg-green-50 p-4 text-center rounded'>
             <p className='text-green-600 font-semibold'>Income</p>
-            <h3 className='font-bold'>${income.toFixed(2)}</h3>
+            <h3 className='font-bold'>₹{income.toFixed(2)}</h3>
           </div>
           <div className='bg-red-50 p-4 text-center rounded'>
             <p className='text-red-600 font-semibold'>Expenses</p>
-            <h3 className='font-bold text-red-600'>-${Math.abs(expenses).toFixed(2)}</h3>
+            <h3 className='font-bold text-red-600'>-₹{Math.abs(expenses).toFixed(2)}</h3>
           </div>
         </div>
 
@@ -173,10 +173,14 @@ const HomePage = () => {
                       <span>{tx.description}</span>
                       <div className='flex gap-2 items-center'>
                         <span className={`${tx.amount < 0 ? 'text-red-500' : 'text-green-600'}`}>
-                          {tx.amount < 0 ? '-' : '+'}${Math.abs(tx.amount).toFixed(2)}
+                          {tx.amount < 0 ? '-' : '+'}₹{Math.abs(tx.amount).toFixed(2)}
                         </span>
-                        <button onClick={() => handleEditTransaction(tx)} className='text-blue-600'>Edit</button>
-                        <button onClick={() => handleDeleteTransaction(tx._id)} className='text-red-600'>Delete</button>
+                        <button onClick={() => handleEditTransaction(tx)} className='text-blue-600'>
+                          <Pencil size={16} />
+                        </button>
+                        <button onClick={() => handleDeleteTransaction(tx._id)} className='text-red-600'>
+                          <Trash2 size={16} />
+                        </button>
                       </div>
                     </div>
                   )}
