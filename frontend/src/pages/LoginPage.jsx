@@ -3,6 +3,10 @@ import axios from 'axios'
 import { useNavigate, Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 
+const BASE_URL = import.meta.env.MODE === "development"
+    ? import.meta.env.VITE_API_URL
+    : "/api"
+
 const LoginPage = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -11,7 +15,7 @@ const LoginPage = () => {
     const handleLogin = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+            const res = await axios.post(`${BASE_URL}/auth/login`, {
                 email,
                 password
             }, {withCredentials: true})

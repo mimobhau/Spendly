@@ -3,6 +3,10 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 import {useNavigate, Link} from "react-router-dom"
 
+const BASE_URL = import.meta.env.MODE === "development"
+    ? import.meta.env.VITE_API_URL
+    : "/api"
+
 const SignupPage = () => {
     const navigate = useNavigate()
     const [fullName, setFullName] = useState("")
@@ -12,7 +16,7 @@ const SignupPage = () => {
     const handleSignup = async (e) => {
         e.preventDefault()
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/signup`, {
+            const res = await axios.post(`${BASE_URL}/auth/signup`, {
                 fullName,
                 email,
                 password

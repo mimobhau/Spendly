@@ -4,6 +4,10 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, Pencil, Trash2 } from 'lucide-react';
 
+const BASE_URL = import.meta.env.MODE === "development"
+  ? import.meta.env.VITE_API_URL
+  : "/api"
+
 const HomePage = () => {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
@@ -20,7 +24,7 @@ const HomePage = () => {
 
   const fetchHomeData = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth`, { withCredentials: true });
+      const res = await axios.get(`${BASE_URL}/auth`, { withCredentials: true });
       const { fullName, balance, income, expenses, transactions } = res.data;
       setFullName(fullName);
       setBalance(balance);
@@ -41,7 +45,7 @@ const HomePage = () => {
     e.preventDefault();
     if (!description || !amount) return toast.error("Please fill in all fields");
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/transactions/add`, {
+      const res = await axios.post(`${BASE_URL}/transactions/add`, {
         description,
         amount: parseFloat(amount)
       }, { withCredentials: true });
@@ -60,7 +64,7 @@ const HomePage = () => {
 
   const handleDeleteTransaction = async (id) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/transactions/${id}`, { withCredentials: true });
+      await axios.delete(`${BASE_URL}/transactions/${id}`, { withCredentials: true });
       toast.success("Transaction deleted!");
       fetchHomeData();
     } catch (err) {
@@ -80,7 +84,7 @@ const HomePage = () => {
     if (!editDescription || !editAmount) return toast.error("All fields required");
 
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/transactions/${editId}`, {
+      await axios.put(`${BASE_URL}/transactions/${editId}`, {
         description: editDescription,
         amount: parseFloat(editAmount)
       }, { withCredentials: true });
@@ -98,7 +102,7 @@ const HomePage = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/signout`, {}, { withCredentials: true });
+      await axios.post(`${BASE_URL}/auth/signout`, {}, { withCredentials: true });
       navigate('/login');
     } catch (err) {
       console.error("Logout error:", err);
