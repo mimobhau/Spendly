@@ -44,6 +44,12 @@ const HomePage = () => {
   const handleAddTransaction = async (e) => {
     e.preventDefault();
     if (!description || !amount) return toast.error("Please fill in all fields");
+
+    if (Math.abs(parseInt(amount)).toString().length > 9) {
+      toast.error("Amount must be 9 digits or less");
+      return;
+    }
+
     try {
       const res = await axios.post(`${BASE_URL}/transactions/add`, {
         description,
@@ -82,6 +88,11 @@ const HomePage = () => {
   const handleUpdateTransaction = async (e) => {
     e.preventDefault();
     if (!editDescription || !editAmount) return toast.error("All fields required");
+
+     if (Math.abs(parseInt(editAmount)).toString().length > 9) {
+        toast.error("Amount must be 9 digits or less");
+        return;
+      }
 
     try {
       await axios.put(`${BASE_URL}/transactions/${editId}`, {
@@ -142,7 +153,7 @@ const HomePage = () => {
           </div>
           <div className='bg-red-50 p-4 text-center rounded'>
             <p className='text-red-600 font-semibold'>Expenses</p>
-            <h3 className='font-bold text-red-600'>-₹{Math.abs(expenses).toFixed(2)}</h3>
+            <h3 className='font-bold text-red-600'>₹{Math.abs(expenses).toFixed(2)}</h3>
           </div>
         </div>
 
