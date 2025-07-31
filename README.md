@@ -1,5 +1,19 @@
-Spendly
-<p align="center"> <img src="https://user-images.githubusercontent.com/placeholder/spendly-logo.png" alt="Spendly Logo" width="120"/> </p> <p align="center"> <b>Track your income, expenses, and manage your finances with ease.</b> </p>
+<h1 align="center" style="font-size:3rem; font-weight:bold;">Spendly</h1>
+<p align="center"> <b>Track your income, expenses, and manage your finances with ease.</b> </p>
+
+📑 Table of Contents
+About Spendly
+Features
+Architecture Overview
+Getting Started
+Roadmap
+Screenshots
+Functionality Overview
+Database Schema
+Project Structure
+Contributing
+License
+
 📖 About Spendly
 Spendly is a modern, full-stack expense tracker and personal finance management application. It empowers users to record, monitor, and analyze their income and expenses in a simple, intuitive interface. With real-time updates, secure authentication, and a clean dashboard, Spendly helps users gain control over their finances, make informed decisions, and build better money habits.
 
@@ -64,7 +78,8 @@ Visit [http://localhost:5173](http://localhost:5173) (or the port shown in your 
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/placeholder/spendly-dashboard.png" alt="Dashboard Screenshot" width="700"/>
+  <img src="./READMEpics/ss2.png" alt="Dashboard Screenshot" width="700"/>
+  <img src="./READMEpics/ss1.png" alt="Dashboard Screenshot" width="700"/>
 </p>
 
 ---
@@ -84,8 +99,6 @@ Visit [http://localhost:5173](http://localhost:5173) (or the port shown in your 
 <input disabled="" type="checkbox"> Multi-user support (family/group budgets)
 <input disabled="" type="checkbox"> PWA support (installable app)
 <input disabled="" type="checkbox"> Improved accessibility (a11y)
-📸 Screenshots
-<p align="center"> <img src="https://user-images.githubusercontent.com/placeholder/spendly-dashboard.png" alt="Dashboard Screenshot" width="700"/> </p>
 
 ---
 
@@ -123,10 +136,35 @@ Spendly/
 
 ---
 
+🗄️ Database Schema
+
+User
+
+{
+  _id: ObjectId,
+  fullName: String,
+  email: String,
+  password: String (hashed),
+  createdAt: Date,
+  updatedAt: Date
+}
+
+Transaction
+
+{
+  _id: ObjectId,
+  user: ObjectId (ref: User),
+  description: String,
+  amount: Number, // positive for income, negative for expense
+  createdAt: Date,
+  updatedAt: Date
+}
+
+---
+
 ## 🤝 Contributing
 
 Contributions, issues and feature requests are welcome!<br/>
-Feel free to check the [issues page](https://github.com/mimobhau/Spendly/issues).
 
 ---
 
